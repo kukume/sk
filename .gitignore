@@ -1,0 +1,6 @@
+/db/
+/.local-browser/
+/.idea/
+/.gradle/
+/build/
+**/application-dev.yml
