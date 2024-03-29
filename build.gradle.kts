@@ -1,9 +1,9 @@
 plugins {
-    val kotlinVersion = "1.9.21"
+    val kotlinVersion = "1.9.22"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
-    id("org.springframework.boot") version "3.2.0"
-    id("io.spring.dependency-management") version "1.1.0"
+    id("org.springframework.boot") version "3.2.2"
+    id("io.spring.dependency-management") version "1.1.4"
     application
 }
 
@@ -19,12 +19,12 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("me.kuku:ktor-spring-boot-starter:2.3.6.1")
-    implementation("me.kuku:utils:2.3.6.0")
+    implementation("me.kuku:ktor-spring-boot-starter:2.3.7.0")
+    implementation("me.kuku:utils:2.3.7.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.jsoup:jsoup:1.15.3")
-    implementation("com.microsoft.playwright:playwright:1.40.0")
+    implementation("com.microsoft.playwright:playwright:1.41.1")
 }
 
 tasks.compileKotlin {

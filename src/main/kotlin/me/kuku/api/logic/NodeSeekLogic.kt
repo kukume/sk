@@ -33,8 +33,8 @@ object NodeSeekLogic {
                     return newLogin(page, username, password, token)
                 } else {
                     // v3
-                    page.type("#stacked-email", username)
-                    page.type("#stacked-password", password)
+                    page.locator("#stacked-email").fill(username)
+                    page.locator("#stacked-password").fill(password)
                     page.click("#login-panel > form > fieldset > div.login-btn-group > button")
                     TimeUnit.SECONDS.sleep(2)
                     try {

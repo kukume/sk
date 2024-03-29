@@ -26,7 +26,7 @@ class NodeSeekController {
 
             get("sign/query") {
                 val cookie = call.request.queryParameters.getOrFail("cookie")
-                call.respond(NodeSeekLogic.querySign(cookie) ?: mapOf<String, String>())
+                call.respond(NodeSeekLogic.querySign(cookie))
             }
 
             post("login") {
