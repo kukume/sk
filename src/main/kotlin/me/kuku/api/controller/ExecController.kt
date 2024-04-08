@@ -11,20 +11,25 @@ import io.ktor.server.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.time.withTimeout
 import me.kuku.api.utils.PlaywrightUtils
 import me.kuku.api.utils.newPage
 import me.kuku.utils.OkHttpUtils
 import me.kuku.utils.toUrlEncode
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import java.util.concurrent.TimeUnit
+import java.time.Duration
+import java.util.UUID
 
 @Component
 class ExecController(
     @Value("\${spring.ktor.port}") private val port: String
 ) {
 
-    val mutex = Mutex()
+    private val mutex = Mutex()
+
+    private val netEaseMusicCheckToken = mutableMapOf<String, String>()
+
 
     fun Routing.exec() {
 
@@ -105,28 +110,38 @@ class ExecController(
                 }
             }
 
-            get("netEaseMusic") {
-                call.respondTemplate("/exec/netEaseMusic")
-
+            route("netEaseMusic") {
+                get {
+                    val uuid = call.request.queryParameters.getOrFail("uuid")
+                    call.respondTemplate("/exec/netEaseMusic", mapOf("port" to port, "uuid" to uuid))
+                }
+                get("response") {
+                    val uuid = call.request.queryParameters.getOrFail("uuid")
+                    val token = call.request.queryParameters.getOrFail("token")
+                    netEaseMusicCheckToken[uuid] = token
+                    call.respond(mapOf("checkToken" to token))
+                }
             }
 
             post("netEase/checkToken") {
                 mutex.withLock {
                     val page = PlaywrightUtils.browser().newPage()
-                    var checkToken: String? = null
-                    try {
-                        page.exposeFunction("kukuCheckToken") {
-                            checkToken = it[0].toString()
-                            checkToken
-                        }
-                        page.navigate("http://localhost:$port/exec/netEaseMusic")
-                        page.evaluate("""
-                            window.WM.getToken("bd5d2f973ef74cd2a61325a412ae54d9", function(e) { kukuCheckToken(e) })
-                        """.trimIndent())
-                        delay(2000)
-                    } finally {
+                    withTimeout(Duration.ofSeconds(30)) {
+                        val uuid = UUID.randomUUID().toString().replace("-", "")
+                        page.navigate("http://localhost:$port/exec/netEaseMusic?uuid=$uuid")
+                        delay(500)
                         page.context().browser().close()
-                        call.respond(mapOf("checkToken" to checkToken))
+                        var i = 0
+                        while (true) {
+                            if (i++ > 30) error("check token api timeout")
+                            val token = netEaseMusicCheckToken.remove(uuid)
+                            if (token == null) {
+                                delay(500)
+                                continue
+                            }
+                            call.respond(mapOf("checkToken" to token))
+                            break
+                        }
                     }
                 }
             }

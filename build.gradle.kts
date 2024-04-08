@@ -19,12 +19,13 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("me.kuku:ktor-spring-boot-starter:2.3.7.0")
-    implementation("me.kuku:utils:2.3.7.0")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("me.kuku:ktor-spring-boot-starter:2.3.9.1")
+    implementation("me.kuku:utils:2.3.9.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.jsoup:jsoup:1.15.3")
-    implementation("com.microsoft.playwright:playwright:1.41.1")
+    implementation("com.microsoft.playwright:playwright:1.42.0")
 }
 
 tasks.compileKotlin {
