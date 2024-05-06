@@ -2,16 +2,21 @@
 
 package me.kuku.api.utils
 
+import com.microsoft.playwright.BrowserContext
 import com.microsoft.playwright.BrowserType
+import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
+import com.microsoft.playwright.options.Cookie
 import me.kuku.api.utils.PlaywrightBrowser.*
-import org.springframework.beans.factory.DisposableBean
-import org.springframework.stereotype.Component
 
 object PlaywrightUtils {
 
-    val playwright: Playwright by lazy {
-        Playwright.create()
+    private val playwright: Playwright by lazy {
+        Playwright.create().also {
+            Runtime.getRuntime().addShutdownHook(Thread {
+                PlaywrightUtils.playwright.close()
+            })
+        }
     }
 
     fun browser(playwrightBrowser: PlaywrightBrowser = Chromium, option: BrowserType.LaunchOptions.() -> Unit = {}): com.microsoft.playwright.Browser {
@@ -33,11 +38,27 @@ fun com.microsoft.playwright.Browser.newPage(option: com.microsoft.playwright.Br
     return newPage(com.microsoft.playwright.Browser.NewPageOptions().apply(option))
 }
 
-@Component
-class ClearBrowser: DisposableBean {
-
-    override fun destroy() {
-        PlaywrightUtils.playwright.close()
+fun BrowserContext.addCookie(cookie: String, domain: String) {
+    val cookieList = mutableListOf<Cookie>()
+    val arr1 = cookie.split("; ")
+    for (single in arr1) {
+        val arr2 = single.split("=")
+        val key = arr2[0]
+        if (key.isEmpty()) continue
+        val value = single.replace("${key}=", "")
+        cookieList.add(Cookie(key, value).also {
+            it.domain = domain
+            it.path = "/"
+        })
     }
+    this.addCookies(cookieList)
+}
 
+fun BrowserContext.cookie(): String {
+    val cookies = this.cookies()
+    val sb = StringBuilder()
+    for (cookie in cookies) {
+        sb.append(cookie.name).append("=").append(cookie.value).append("; ")
+    }
+    return sb.toString()
 }

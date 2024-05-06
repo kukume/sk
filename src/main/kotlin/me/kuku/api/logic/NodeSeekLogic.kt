@@ -9,6 +9,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.kuku.api.utils.PlaywrightBrowser
 import me.kuku.api.utils.PlaywrightUtils
+import me.kuku.api.utils.addCookie
 import me.kuku.utils.toJsonNode
 import java.util.concurrent.TimeUnit
 
@@ -88,19 +89,7 @@ object NodeSeekLogic {
         mutes.withLock {
             val page = PlaywrightUtils.browser(PlaywrightBrowser.Firefox).newPage()
             try {
-                val cookieList = mutableListOf<Cookie>()
-                val arr1 = cookie.split("; ")
-                for (single in arr1) {
-                    val arr2 = single.split("=")
-                    val key = arr2[0]
-                    if (key.isEmpty()) continue
-                    val value = single.replace("${key}=", "")
-                    cookieList.add(Cookie(key, value).also {
-                        it.domain = ".nodeseek.com"
-                        it.path = "/"
-                    })
-                }
-                page.context().addCookies(cookieList)
+                page.context().addCookie(cookie, ".nodeseek.com")
                 page.navigate("https://www.nodeseek.com")
                 page.waitForSelector("#nsk-head")
                 val url = "https://www.nodeseek.com/api/attendance?random=$random"
