@@ -20,12 +20,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("me.kuku:ktor-spring-boot-starter:2.3.9.1")
-    implementation("me.kuku:utils:2.3.9.0")
+    implementation("me.kuku:ktor-spring-boot-starter:2.3.10.0")
+    implementation("me.kuku:utils:2.3.10.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.jsoup:jsoup:1.15.3")
-    implementation("com.microsoft.playwright:playwright:1.42.0")
+    implementation("com.microsoft.playwright:playwright:1.43.0")
 }
 
 tasks.compileKotlin {

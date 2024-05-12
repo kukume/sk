@@ -8,6 +8,7 @@ import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import com.microsoft.playwright.options.Cookie
 import me.kuku.api.utils.PlaywrightBrowser.*
+import me.kuku.utils.toUrlDecode
 
 object PlaywrightUtils {
 
@@ -45,7 +46,7 @@ fun BrowserContext.addCookie(cookie: String, domain: String) {
         val arr2 = single.split("=")
         val key = arr2[0]
         if (key.isEmpty()) continue
-        val value = single.replace("${key}=", "")
+        val value = single.replace("${key}=", "").replace(";", "").trim()
         cookieList.add(Cookie(key, value).also {
             it.domain = domain
             it.path = "/"

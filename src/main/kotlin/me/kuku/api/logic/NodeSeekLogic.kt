@@ -96,6 +96,7 @@ object NodeSeekLogic {
                 page.route(url) {
                     val headers = it.request().headers()
                     headers["content-type"] = "text/plain"
+                    headers["referer"] = "https://www.nodeseek.com/board"
                     it.resume(Route.ResumeOptions().setMethod("POST").setPostData("").setHeaders(headers))
                 }
                 val ss = CompletableDeferred<String>()

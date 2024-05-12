@@ -19,7 +19,7 @@ class LinuxDoController {
             get("topic/{id}") {
                 val id = call.parameters.getOrFail("id")
                 val cookie = call.request.headers["cookie"] ?: error("cookie不存在")
-                PlaywrightUtils.browser().use {
+                PlaywrightUtils.browser(){ headless = false }.use {
                     val page = it.newPage()
                     page.context().addCookie(cookie, ".linux.do")
                     page.navigate("https://linux.do/t/topic/${id}")
@@ -29,7 +29,7 @@ class LinuxDoController {
             }
             get("index") {
                 val cookie = call.request.headers["cookie"] ?: error("cookie不存在")
-                PlaywrightUtils.browser().use {
+                PlaywrightUtils.browser(){ headless = false }.use {
                     val page = it.newPage()
                     page.context().addCookie(cookie, ".linux.do")
                     page.navigate("https://linux.do")
