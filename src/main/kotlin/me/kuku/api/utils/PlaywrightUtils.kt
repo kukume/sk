@@ -4,11 +4,9 @@ package me.kuku.api.utils
 
 import com.microsoft.playwright.BrowserContext
 import com.microsoft.playwright.BrowserType
-import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import com.microsoft.playwright.options.Cookie
 import me.kuku.api.utils.PlaywrightBrowser.*
-import me.kuku.utils.toUrlDecode
 
 object PlaywrightUtils {
 
@@ -26,7 +24,9 @@ object PlaywrightUtils {
             Firefox -> playwright.firefox()
             Webkit -> playwright.webkit()
         }
-        return browserType.launch(BrowserType.LaunchOptions().apply(option))
+        val options = BrowserType.LaunchOptions().apply(option)
+        if (System.getProperty("spring.profiles.active") == "prod") options.headless = true
+        return browserType.launch(options)
     }
 
 }
