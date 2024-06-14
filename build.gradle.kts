@@ -25,7 +25,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.jsoup:jsoup:1.15.3")
-    implementation("com.microsoft.playwright:playwright:1.43.0")
+    implementation("com.microsoft.playwright:playwright:1.44.0")
 }
 
 tasks.compileKotlin {

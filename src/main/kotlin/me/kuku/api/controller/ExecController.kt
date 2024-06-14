@@ -28,9 +28,6 @@ class ExecController(
 
     private val mutex = Mutex()
 
-    private val netEaseMusicCheckToken = mutableMapOf<String, String>()
-
-
     fun Routing.exec() {
 
         route("exec") {
@@ -112,14 +109,7 @@ class ExecController(
 
             route("netEaseMusic") {
                 get {
-                    val uuid = call.request.queryParameters.getOrFail("uuid")
-                    call.respondTemplate("/exec/netEaseMusic", mapOf("port" to port, "uuid" to uuid))
-                }
-                get("response") {
-                    val uuid = call.request.queryParameters.getOrFail("uuid")
-                    val token = call.request.queryParameters.getOrFail("token")
-                    netEaseMusicCheckToken[uuid] = token
-                    call.respond(mapOf("checkToken" to token))
+                    call.respondTemplate("/exec/netEaseMusic")
                 }
             }
 
@@ -129,13 +119,11 @@ class ExecController(
                     withTimeout(Duration.ofSeconds(30)) {
                         val uuid = UUID.randomUUID().toString().replace("-", "")
                         page.navigate("http://localhost:$port/exec/netEaseMusic?uuid=$uuid")
-                        delay(500)
-                        page.context().browser().close()
                         var i = 0
                         while (true) {
                             if (i++ > 30) error("check token api timeout")
-                            val token = netEaseMusicCheckToken.remove(uuid)
-                            if (token == null) {
+                            val token = page.evaluate("""document.getElementById('checkToken').innerHTML""").toString()
+                            if (token.isEmpty()) {
                                 delay(500)
                                 continue
                             }
