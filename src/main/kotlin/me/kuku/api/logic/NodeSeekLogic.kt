@@ -18,7 +18,7 @@ object NodeSeekLogic {
     @Suppress("DuplicatedCode")
     suspend fun sign(cookie: String, random: Boolean = false) {
         mutes.withLock {
-            val page = PlaywrightUtils.browser(PlaywrightBrowser.Firefox){headless=false}.newPage()
+            val page = PlaywrightUtils.browser(PlaywrightBrowser.Firefox).newPage()
             try {
                 page.context().addCookie(cookie, ".nodeseek.com")
                 page.navigate("https://www.nodeseek.com")

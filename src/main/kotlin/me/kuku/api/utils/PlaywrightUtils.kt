@@ -26,6 +26,7 @@ object PlaywrightUtils {
         }
         val options = BrowserType.LaunchOptions().apply(option)
         if (System.getProperty("spring.profiles.active") == "prod") options.headless = true
+        else if (System.getProperty("spring.profiles.active") == "dev") options.headless = false
         return browserType.launch(options)
     }
 
