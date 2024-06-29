@@ -18,7 +18,7 @@ object NodeSeekLogic {
     @Suppress("DuplicatedCode")
     suspend fun sign(cookie: String, random: Boolean = false) {
         mutes.withLock {
-            val page = PlaywrightUtils.browser(PlaywrightBrowser.Firefox).newPage()
+            val page = PlaywrightUtils.browser(PlaywrightBrowser.Firefox){headless=false}.newPage()
             try {
                 page.context().addCookie(cookie, ".nodeseek.com")
                 page.navigate("https://www.nodeseek.com")
@@ -28,6 +28,7 @@ object NodeSeekLogic {
                     val headers = it.request().headers()
                     headers["content-type"] = "text/plain"
                     headers["referer"] = "https://www.nodeseek.com/board"
+                    headers["origin"] = "https://www.nodeseek.com"
                     it.resume(Route.ResumeOptions().setMethod("POST").setPostData("").setHeaders(headers))
                 }
                 val ss = CompletableDeferred<String>()
