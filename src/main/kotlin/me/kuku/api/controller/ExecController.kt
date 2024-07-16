@@ -43,11 +43,14 @@ class ExecController(
                 val phone = receiveParameters.getOrFail("phone")
                 val time = receiveParameters.getOrFail("time")
                 val page = PlaywrightUtils.browser().newPage()
-                withContext(Dispatchers.IO) {
-                    page.navigate("http://localhost:$port/exec/kuGou?phone=$phone&time=$time")
-                    val params = page.evaluate("document.getElementById(\"params\").innerText")?.toString()
-                    val pk = page.evaluate("document.getElementById(\"pk\").innerText")?.toString()
-                    call.respond(mapOf("params" to params, "pk" to pk))
+                try {
+                    withContext(Dispatchers.IO) {
+                        page.navigate("http://localhost:$port/exec/kuGou?phone=$phone&time=$time")
+                        val params = page.evaluate("document.getElementById(\"params\").innerText")?.toString()
+                        val pk = page.evaluate("document.getElementById(\"pk\").innerText")?.toString()
+                        call.respond(mapOf("params" to params, "pk" to pk))
+                    }
+                } finally {
                     page.context().browser().close()
                 }
             }
@@ -116,20 +119,24 @@ class ExecController(
             post("netEase/checkToken") {
                 mutex.withLock {
                     val page = PlaywrightUtils.browser().newPage()
-                    withTimeout(Duration.ofSeconds(30)) {
-                        val uuid = UUID.randomUUID().toString().replace("-", "")
-                        page.navigate("http://localhost:$port/exec/netEaseMusic?uuid=$uuid")
-                        var i = 0
-                        while (true) {
-                            if (i++ > 30) error("check token api timeout")
-                            val token = page.evaluate("""document.getElementById('checkToken').innerHTML""").toString()
-                            if (token.isEmpty()) {
-                                delay(500)
-                                continue
+                    try {
+                        withTimeout(Duration.ofSeconds(30)) {
+                            val uuid = UUID.randomUUID().toString().replace("-", "")
+                            page.navigate("http://localhost:$port/exec/netEaseMusic?uuid=$uuid")
+                            var i = 0
+                            while (true) {
+                                if (i++ > 30) error("check token api timeout")
+                                val token = page.evaluate("""document.getElementById('checkToken').innerHTML""").toString()
+                                if (token.isEmpty()) {
+                                    delay(500)
+                                    continue
+                                }
+                                call.respond(mapOf("checkToken" to token))
+                                break
                             }
-                            call.respond(mapOf("checkToken" to token))
-                            break
                         }
+                    } finally {
+                        page.context().browser().close()
                     }
                 }
             }
