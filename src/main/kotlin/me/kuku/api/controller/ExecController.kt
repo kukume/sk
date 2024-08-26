@@ -16,19 +16,16 @@ import me.kuku.api.utils.PlaywrightUtils
 import me.kuku.api.utils.newPage
 import me.kuku.utils.OkHttpUtils
 import me.kuku.utils.toUrlEncode
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
 import java.time.Duration
 import java.util.UUID
 
-@Component
-class ExecController(
-    @Value("\${spring.ktor.port}") private val port: String
-) {
+private val mutex = Mutex()
 
-    private val mutex = Mutex()
+fun Application.exec() {
 
-    fun Routing.exec() {
+    val port = environment.config.config("ktor.deployment").property("port")
+
+    routing {
 
         route("exec") {
             get("kuGou") {

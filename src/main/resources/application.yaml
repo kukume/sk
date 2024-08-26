@@ -1,0 +1,10 @@
+ktor:
+  deployment:
+    port: "$PORT:8080"
+  application:
+    modules:
+      - me.kuku.api.config.KtorConfigKt.config
+      - me.kuku.api.controller.ExecControllerKt.exec
+      - me.kuku.api.controller.IndexControllerKt.index
+      - me.kuku.api.controller.LinuxDoControllerKt.linuxDo
+      - me.kuku.api.controller.NodeSeekControllerKt.nodeSeek

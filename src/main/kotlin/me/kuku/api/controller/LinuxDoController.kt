@@ -10,15 +10,13 @@ import kotlinx.coroutines.sync.withLock
 import me.kuku.api.utils.PlaywrightUtils
 import me.kuku.api.utils.addCookie
 import me.kuku.api.utils.cookie
-import org.springframework.stereotype.Component
 
-@Component
-class LinuxDoController {
+fun Application.linuxDo() {
 
-    private val mutes = Mutex()
+    val mutes = Mutex()
 
+    routing {
 
-    fun Routing.linuxDo() {
         route("/linuxdo") {
             get("topic/{id}") {
                 val id = call.parameters.getOrFail("id")
@@ -47,6 +45,5 @@ class LinuxDoController {
             }
         }
     }
-
 
 }

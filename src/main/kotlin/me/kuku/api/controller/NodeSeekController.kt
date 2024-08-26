@@ -5,13 +5,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import me.kuku.api.logic.NodeSeekLogic
-import org.springframework.stereotype.Component
 
-@Component
-class NodeSeekController {
+fun Application.nodeSeek() {
+    routing {
 
-
-    fun Routing.nodeSeek() {
         route("nodeseek") {
 
             get("sign") {
@@ -28,6 +25,6 @@ class NodeSeekController {
             }
 
         }
-    }
 
+    }
 }

@@ -1,10 +1,8 @@
 plugins {
-    val kotlinVersion = "2.0.0"
+    val kotlinVersion = "2.0.20"
     kotlin("jvm") version kotlinVersion
-    kotlin("plugin.spring") version kotlinVersion
-    id("org.springframework.boot") version "3.2.2"
-    id("io.spring.dependency-management") version "1.1.4"
-    application
+    val ktorVersion = "2.3.12"
+    id("io.ktor.plugin") version ktorVersion
 }
 
 group = "me.kuku"
@@ -17,13 +15,20 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("me.kuku:ktor-spring-boot-starter:2.3.10.0")
-    implementation("me.kuku:utils:2.3.10.0")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("io.ktor:ktor-server-core")
+    implementation("io.ktor:ktor-server-thymeleaf")
+    implementation("io.ktor:ktor-server-status-pages")
+    implementation("io.ktor:ktor-server-call-logging")
+    implementation("io.ktor:ktor-server-content-negotiation")
+    implementation("io.ktor:ktor-serialization-jackson")
+    implementation("io.ktor:ktor-server-cio")
+    implementation("io.ktor:ktor-server-config-yaml")
+    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-server-double-receive")
+
+    implementation("ch.qos.logback:logback-classic:1.5.6")
+
+    implementation("me.kuku:utils:2.3.12.1")
     implementation("org.jsoup:jsoup:1.15.3")
     implementation("com.microsoft.playwright:playwright:1.44.0")
 }
